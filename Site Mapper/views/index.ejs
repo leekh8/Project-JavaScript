@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width = device-width, initial-scale = 1.0" />
+    <title>Site Mapper</title>
+    <link rel="stylesheet" href="/bootstrap.min.css" />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h1 class="text-center">Site Mapper</h1>
+      <form action="/generate" method="post" class="mb-3">
+        <div class="mb-3">
+          <label for="url" class="form-label">웹 사이트 URL:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="url"
+            name="url"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">사이트맵 생성</button>
+      </form>
+
+      <% if (error) { %>
+      <div class="alert alert-danger"><%= error %></div>
+      <% } %> <% if (sitemap) { %>
+      <textarea class="form-control mt-3" rows="10" readonly>
+<%= sitemap %></textarea
+      >
+      <% } %>
+    </div>
+
+    <script src="/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

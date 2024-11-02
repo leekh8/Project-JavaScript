@@ -1,0 +1,20 @@
+{
+  "name": "site-mapper",
+  "version": "1.0.0",
+  "description": "![header](https://capsule-render.vercel.app/api?type=waving&color=auto&height=100&section=header&fontSize=90)",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "node-fetch": "^3.3.2"
+  }
+}
