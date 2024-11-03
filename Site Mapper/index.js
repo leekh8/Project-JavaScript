@@ -64,6 +64,10 @@ app.get("/", (req, res) => {
           <button type="submit" class="btn btn-primary btn-lg w-100">
             사이트맵 생성
           </button>
+          <button type="button" onclick="window.location.href='/'" class="btn btn-secondary btn-lg w-100 mt-2">
+          초기화
+          </button>
+
         </form>
 
         ${errorHtml}
