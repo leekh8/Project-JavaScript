@@ -18,14 +18,14 @@ app.get("/", (req, res) => {
   let sitemapHtml = "";
 
   if (error) {
-    errorHtml = `<div class="alert alert-danger text-center">${error}</div>`;
+    errorHtml = `<div class="alert">${error}</div>`;
   }
 
   if (sitemapGenerated) {
     sitemapHtml = `
       <div class="mt-4">
         <h5 class="text-success">사이트맵 결과:</h5>
-        <textarea class="form-control" rows="10" readonly>${sitemapGenerated}</textarea>
+        <textarea class="form-control" rows="10" readonly style="resize: none;">${sitemapGenerated}</textarea>
         <div class="mt-3">
           <a href="/download?data=${encodeURIComponent(
             sitemapGenerated
@@ -42,6 +42,7 @@ app.get("/", (req, res) => {
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>Site Mapper</title>
       <link rel="stylesheet" href="/styles.css" />
+      <link rel="icon" href="/favicon.ico" type="image/x-icon" />
     </head>
     <body class="bg-light">
       <div class="container mt-5 p-5 bg-white rounded shadow">
