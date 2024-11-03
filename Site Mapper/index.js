@@ -1,71 +1,107 @@
 import express from "express";
-import fetch from "node-fetch";
-import * as cheerio from "cheerio";
+import bodyParser from "body-parser";
+import { generateSitemapXML } from "./utils/sitemapGenerator.js";
 import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-app.set("view engine", "ejs"); // 템플릿 엔진 설정
-app.set("views", path.join(__dirname, "views"));
-app.use(express.static(path.join(__dirname, "public"))); // Bootstrap 사용 설정
-app.use(express.urlencoded({ extended: true })); // 폼 데이터 처리 설정
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.resolve("public")));
 
+// 메인 페이지 GET 요청
 app.get("/", (req, res) => {
-  res.render("index", { sitemap: null, error: null }); // 초기 화면
+  const error = req.query.error;
+  const sitemapGenerated = req.query.sitemap;
+
+  let errorHtml = "";
+  let sitemapHtml = "";
+
+  if (error) {
+    errorHtml = `<div class="alert alert-danger text-center">${error}</div>`;
+  }
+
+  if (sitemapGenerated) {
+    sitemapHtml = `
+      <div class="mt-4">
+        <h5 class="text-success">사이트맵 결과:</h5>
+        <textarea class="form-control" rows="10" readonly>${sitemapGenerated}</textarea>
+        <div class="mt-3">
+          <a href="/download?data=${encodeURIComponent(
+            sitemapGenerated
+          )}" class="btn btn-success">사이트맵 다운로드</a>
+        </div>
+      </div>`;
+  }
+
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Site Mapper</title>
+      <link rel="stylesheet" href="/styles.css" />
+    </head>
+    <body class="bg-light">
+      <div class="container mt-5 p-5 bg-white rounded shadow">
+        <h1 class="text-center text-primary mb-4">Site Mapper</h1>
+
+        <!-- URL 입력 폼 -->
+        <form action="/generate" method="post" class="mb-3">
+          <div class="mb-3">
+            <label for="url" class="form-label">웹 사이트 URL:</label>
+            <input
+              type="url"
+              class="form-control form-control-lg"
+              id="url"
+              name="url"
+              placeholder="예: https://example.com"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg w-100">
+            사이트맵 생성
+          </button>
+        </form>
+
+        ${errorHtml}
+        ${sitemapHtml}
+      </div>
+    </body>
+    </html>
+  `);
 });
 
+// 사이트맵 생성 POST 요청
 app.post("/generate", async (req, res) => {
-  const baseUrl = req.body.url;
+  const url = req.body.url;
+
+  if (!url) {
+    return res.redirect("/?error=URL을 입력해주세요.");
+  }
 
   try {
-    const response = await fetch(baseUrl);
-    if (response.status !== 200) {
-      throw new Error("웹사이트에 접속할 수 없습니다.");
-    }
-
-    const html = await response.text();
-    const $ = cheerio.load(html);
-
-    const pages = $("a")
-      .map((i, el) => {
-        const href = $(el).attr("href");
-        if (href && href.startsWith("/") && !href.startsWith("//")) {
-          // 상대 경로를 절대 경로로 변환
-          const absoluteUrl = new URL(href, baseUrl).href;
-          if (absoluteUrl.startsWith(baseUrl)) {
-            // 내부 링크만 크롤링
-            return { url: absoluteUrl };
-          }
-        }
-      })
-      .get();
-
-    let sitemap = '<?xml version="1.0" encoding="UTF-8"?>';
-    sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
-    pages.forEach((page) => {
-      sitemap += "<url>";
-      sitemap += `<loc>${baseUrl}${page.url}</loc>`;
-      sitemap += `<lastmod>${new Date().toISOString()}</lastmod>`;
-      sitemap += "</url>";
-    });
-    sitemap += "</urlset>";
-
-    res.render("index", { sitemap, error: null });
-  } catch (error) {
-    res.render("index", {
-      sitemap: null,
-      error: "URL을 가져오는 중 오류가 발생했습니다.",
-    });
+    const sitemap = await generateSitemapXML(url);
+    res.redirect(`/?sitemap=${encodeURIComponent(sitemap)}`);
+  } catch (err) {
+    console.error(err);
+    res.redirect("/?error=사이트맵 생성 중 오류가 발생했습니다.");
   }
 });
 
-app.listen(3000, () => {
-  console.log(
-    "서버 시작! http://localhost:3000/sitemap.xml 에서 사이트맵 확인"
-  );
+// 사이트맵 다운로드 GET 요청
+app.get("/download", (req, res) => {
+  const data = req.query.data;
+  if (!data) {
+    return res.redirect("/?error=다운로드할 데이터가 없습니다.");
+  }
+
+  res.setHeader("Content-Disposition", 'attachment; filename="sitemap.xml"');
+  res.setHeader("Content-Type", "application/xml");
+  res.send(data);
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
