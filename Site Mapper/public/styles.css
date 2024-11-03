@@ -1,0 +1,18 @@
+body {
+  background-color: #f8f9fa;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.text-primary {
+  color: #007bff !important;
+}
+
+.container {
+  border: 2px solid #0d6efd;
+  padding: 20px;
+  border-radius: 10px;
+}
