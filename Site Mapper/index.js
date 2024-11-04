@@ -43,13 +43,32 @@ app.get("/", (req, res) => {
       <title>Site Mapper</title>
       <link rel="stylesheet" href="/styles.css" />
       <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+      <script>
+        function validateForm() {
+          const urlInput = document.getElementById("url").value;
+          const urlPattern = new RegExp(
+            "^(https?:\\/\\/)?" + // protocol
+            "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+            "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+            "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+            "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+            "(\\#[-a-z\\d_]*)?$", // fragment locator
+            "i"
+          );
+          if (!urlPattern.test(urlInput)) {
+            alert("올바른 URL을 입력해 주세요.");
+            return false;
+          }
+          return true;
+        }
+    </script>
     </head>
     <body class="bg-light">
       <div class="container mt-5 p-5 bg-white rounded shadow">
         <h1 class="text-center text-primary mb-4">Site Mapper</h1>
 
         <!-- URL 입력 폼 -->
-        <form action="/generate" method="post" class="mb-3">
+        <form action="/generate" method="post" class="mb-3" onsubmit="return validateForm()">
           <div class="mb-3">
             <label for="url" class="form-label">웹 사이트 URL:</label>
             <input
