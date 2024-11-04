@@ -62,13 +62,23 @@ app.get("/", (req, res) => {
           return true;
         }
     </script>
+
+    <script>
+      function showLoading() {
+        document.getElementById("loading").style.display = "block";
+      }
+    </script>
+
     </head>
     <body class="bg-light">
       <div class="container mt-5 p-5 bg-white rounded shadow">
         <h1 class="text-center text-primary mb-4">Site Mapper</h1>
-
+<div id="loading" style="display: none;" class="text-center">
+  <p>사이트맵을 생성 중입니다. 잠시만 기다려 주세요...</p>
+  <div class="spinner"></div>
+</div>
         <!-- URL 입력 폼 -->
-        <form action="/generate" method="post" class="mb-3" onsubmit="return validateForm()">
+        <form action="/generate" method="post" class="mb-3" onsubmit="showLoading(); return validateForm();">
           <div class="mb-3">
             <label for="url" class="form-label">웹 사이트 URL:</label>
             <input
@@ -86,9 +96,7 @@ app.get("/", (req, res) => {
           <button type="button" onclick="window.location.href='/'" class="btn btn-secondary btn-lg w-100 mt-2">
           초기화
           </button>
-
         </form>
-
         ${errorHtml}
         ${sitemapHtml}
       </div>
