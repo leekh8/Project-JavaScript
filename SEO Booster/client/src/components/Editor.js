@@ -3,6 +3,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { generateSeoTags, analyzeSeoImprovements } from "../utils/seoHelper";
 import KeywordHighlighter from "./KeywordHighlighter";
+import SEOAnalyzer from "./SEOAnalyzer";
 
 const MarkdownEditor = () => {
   const [content, setContent] = useState("");
@@ -37,11 +38,7 @@ const MarkdownEditor = () => {
       </div>
       <div>
         <h3>SEO 개선점:</h3>
-        <ul>
-          {seoSuggestions.map((suggestion, index) => (
-            <li key={index}>{suggestion}</li>
-          ))}
-        </ul>
+        <SEOAnalyzer content={content} />
       </div>
     </div>
   );

@@ -1,6 +1,5 @@
 import React from "react";
 import HomePage from "./pages/HomePage";
-import SEOAnalyzer from "./components/SEOAnalyzer";
 import "./App.css";
 
 function App() {
@@ -8,7 +7,6 @@ function App() {
     <div className="App">
       <main>
         <HomePage />
-        {/* <SEOAnalyzer /> */}
       </main>
     </div>
   );
