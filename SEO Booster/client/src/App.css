@@ -1,3 +1,4 @@
+/* App.css */
 .App {
   text-align: center;
 }
@@ -20,11 +21,12 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: #0077b6; /* Primary Color 적용 */
+  background-color: #f0f4f8; /* Background Color 적용 */
 }
 
 .App-link {
-  color: #61dafb;
+  color: #00b4d8; /* Secondary Color 적용 */
 }
 
 @keyframes App-logo-spin {
