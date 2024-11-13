@@ -2,9 +2,22 @@ import express from "express";
 import bodyParser from "body-parser";
 import { generateSitemapXML } from "./utils/sitemapGenerator.js";
 import path from "path";
+import session from "express-session";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// 세션 미들웨어 설정
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET, // 보안을 위한 secret 키 설정
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 // 미들웨어 설정
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -26,7 +39,7 @@ const urlPattern = new RegExp(
 // 메인 페이지 GET 요청
 app.get("/", (req, res) => {
   const error = req.query.error;
-  const sitemapGenerated = req.query.sitemap;
+  const sitemapGenerated = req.session.sitemap || null;
 
   res.render("index", { error, sitemapGenerated });
 });
@@ -41,7 +54,8 @@ app.post("/generate", async (req, res) => {
 
   try {
     const sitemap = await generateSitemapXML(url);
-    res.redirect(`/?sitemap=${encodeURIComponent(sitemap)}`);
+    req.session.sitemap = sitemap; // 세션에 사이트맵 저장
+    res.redirect(`/`);
   } catch (err) {
     console.error(err);
     if (err.message.includes("ENOTFOUND")) {
@@ -56,14 +70,14 @@ app.post("/generate", async (req, res) => {
 
 // 사이트맵 다운로드 GET 요청
 app.get("/download", (req, res) => {
-  const data = req.query.data;
-  if (!data) {
+  const sitemap = req.session.sitemap;
+  if (!sitemap) {
     return res.redirect("/?error=다운로드할 데이터가 없습니다.");
   }
 
   res.setHeader("Content-Disposition", 'attachment; filename="sitemap.xml"');
   res.setHeader("Content-Type", "application/xml");
-  res.send(data);
+  res.send(sitemap);
 });
 
 // 서버 시작
