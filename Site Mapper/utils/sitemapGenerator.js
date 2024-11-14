@@ -16,11 +16,11 @@ export const generateSitemapXML = async (url) => {
     const visited = new Set(); // 중복 링크 방지를 위한 Set
 
     $("a[href]").each((_, element) => {
-      let link = $(element).attr("href");
+      let link = $(element).attr("href").trim();
 
       // 상대 경로 링크 처리
-      if (!link.startsWith("http")) {
-        link = urlLib.resolve(url, link); // 상대 경로를 절대 경로로 변환
+      if (link.startsWith("/") || !link.startsWith("http")) {
+        link = new URL(link, baseURL).href; // 상대 경로를 절대 경로로 변환
       }
 
       // baseURL과 동일한 도메인만 포함
@@ -37,9 +37,14 @@ export const generateSitemapXML = async (url) => {
       }
     });
 
+    if (visited.size === 0) {
+      throw new Error("수집할 수 있는 링크가 없습니다. 페이지가 올바른지 확인해 주세요.");
+    }
+
     sitemap += `</urlset>`;
     return sitemap;
   } catch (error) {
+    console.error("사이트맵 생성 실패:", error.message);
     throw new Error("사이트맵 생성 실패");
   }
 };
