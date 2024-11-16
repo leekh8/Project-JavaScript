@@ -63,7 +63,19 @@ app.post("/generate", async (req, res) => {
         "/?error=해당 URL을 찾을 수 없습니다. 올바른 URL인지 확인해 주세요."
       );
     } else {
-      res.redirect("/?error=사이트맵 생성 중 오류가 발생했습니다.");
+      // 기본 사이트 정보 추가
+      req.session.sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${url}</loc>
+    <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>`;
+      res.redirect(
+        "/?error=사이트맵 생성 중 일부 오류가 발생했습니다. 기본 정보가 추가되었습니다."
+      );
     }
   }
 });
@@ -78,6 +90,21 @@ app.get("/download", (req, res) => {
   res.setHeader("Content-Disposition", 'attachment; filename="sitemap.xml"');
   res.setHeader("Content-Type", "application/xml");
   res.send(sitemap);
+});
+
+// 사용 가이드 페이지
+app.get("/guide", (req, res) => {
+  res.render("guide");
+});
+
+// 연락처 페이지
+app.get("/contact", (req, res) => {
+  res.render("contact");
+});
+
+// FAQ 페이지
+app.get("/faq", (req, res) => {
+  res.render("faq");
 });
 
 // 서버 시작
