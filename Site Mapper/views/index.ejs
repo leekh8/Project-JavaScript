@@ -3,9 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Site Mapper - 간단하게 사이트맵을 생성할 수 있는 도구"
+    />
     <title>Site Mapper</title>
     <link rel="stylesheet" href="/styles.css" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
     <script>
       function validateForm() {
         const urlInput = document.getElementById("url").value;
@@ -33,6 +41,49 @@
   <body class="bg-light">
     <div class="container mt-5 p-5 bg-white rounded shadow">
       <h1 class="text-center text-primary mb-4">Site Mapper</h1>
+      <p>
+        Site Mapper는 사용자가 웹사이트의 사이트맵을 쉽게 생성할 수 있도록
+        도와주는 도구입니다.
+      </p>
+      <nav class="mb-4">
+        <ul
+          style="
+            display: flex;
+            list-style: none;
+            justify-content: space-around;
+            padding: 0;
+          "
+        >
+          <li>
+            <a
+              href="/"
+              style="text-decoration: none; color: #0077b6; font-weight: bold"
+              >홈</a
+            >
+          </li>
+          <li>
+            <a
+              href="/guide"
+              style="text-decoration: none; color: #0077b6; font-weight: bold"
+              >사용 가이드</a
+            >
+          </li>
+          <li>
+            <a
+              href="/contact"
+              style="text-decoration: none; color: #0077b6; font-weight: bold"
+              >연락처</a
+            >
+          </li>
+          <li>
+            <a
+              href="/faq"
+              style="text-decoration: none; color: #0077b6; font-weight: bold"
+              >FAQ</a
+            >
+          </li>
+        </ul>
+      </nav>
       <div id="loading" style="display: none" class="text-center">
         <p>사이트맵을 생성 중입니다. 잠시만 기다려 주세요...</p>
         <div class="spinner"></div>
