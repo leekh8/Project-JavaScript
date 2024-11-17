@@ -30,6 +30,13 @@ body {
   font-size: 16px;
 }
 
+.btn-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
 .btn-primary {
   background-color: #007bff;
   color: white;
@@ -74,6 +81,33 @@ body {
   background-color: #218838;
 }
 
+.btn-custom {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 20px auto;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+}
+
+.btn-custom:hover {
+  background-color: #0056b3;
+  box-shadow: 0 6px 10px rgba(0, 123, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.btn-custom:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 6px rgba(0, 123, 255, 0.3);
+}
+
 .text-center {
   text-align: center;
 }
@@ -84,6 +118,11 @@ body {
 
 .text-success {
   color: #28a745;
+}
+
+.text-muted {
+  color: #6c757d;
+  font-style: italic;
 }
 
 .alert {
@@ -103,6 +142,76 @@ body {
   height: 40px;
   animation: spin 1s linear infinite;
   margin: 20px auto;
+}
+
+.spinner::after {
+  content: "로딩 중...";
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+  color: #0077b6;
+  font-weight: bold;
+}
+
+img {
+  display: block;
+  margin: 0 auto;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  justify-content: space-around;
+  padding: 0;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #0077b6;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+  color: #0056b3;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  justify-content: space-around;
+  padding: 1rem 0;
+  border-bottom: 2px solid #0056b3;
+  margin: 20px 0;
+}
+
+.list-unstyled {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list-unstyled > li {
+  padding: 10px 0;
+  border: none;
+}
+
+.faq-item {
+  margin-bottom: 20px;
+}
+
+.faq-item h3 {
+  color: #0077b6;
+  font-weight: bold;
+}
+
+.faq-item p {
+  color: #333;
 }
 
 @keyframes spin {
