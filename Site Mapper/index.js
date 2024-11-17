@@ -4,6 +4,7 @@ import { generateSitemapXML } from "./utils/sitemapGenerator.js";
 import path from "path";
 import session from "express-session";
 import dotenv from "dotenv";
+import nodemailer from "nodemailer";
 
 dotenv.config();
 
@@ -105,6 +106,11 @@ app.get("/contact", (req, res) => {
 // FAQ 페이지
 app.get("/faq", (req, res) => {
   res.render("faq");
+});
+
+// 404 페이지
+app.use((req, res) => {
+  res.status(404).render("404");
 });
 
 // 서버 시작
