@@ -100,7 +100,45 @@ app.get("/guide", (req, res) => {
 
 // 연락처 페이지
 app.get("/contact", (req, res) => {
-  res.render("contact");
+  const error = req.query.error || null; // 쿼리로 전달된 오류 메시지
+  const success = req.query.success || null; // 쿼리로 전달된 성공 메시지
+
+  res.render("contact", { error, success });
+});
+
+// Feedback 처리
+app.post("/submit-feedback", async (req, res) => {
+  const { email, message } = req.body;
+
+  if (!email || !message || message.length < 10) {
+    return res.redirect(
+      "/contact?error=올바른 이메일과 메시지를 입력해주세요."
+    );
+  }
+
+  try {
+    // Nodemailer 설정
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_ADDRESS,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    // 이메일 전송
+    await transporter.sendMail({
+      from: email,
+      to: "contact.us.universally.now@gmail.com",
+      subject: `Site Mapper 피드백 from ${email}`,
+      text: message,
+    });
+
+    res.redirect("/contact?success=피드백이 성공적으로 전송되었습니다!");
+  } catch (error) {
+    console.error(error);
+    res.redirect("/contact?error=피드백 전송 중 문제가 발생했습니다.");
+  }
 });
 
 // FAQ 페이지
