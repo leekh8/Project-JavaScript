@@ -1,6 +1,8 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
-import urlLib from "url";
+import puppeteer from "puppeteer";
+import fs from "fs/promises";
+import path from "path";
 
 export const generateSitemapXML = async (url) => {
   try {
@@ -14,10 +16,14 @@ export const generateSitemapXML = async (url) => {
       );
     }
 
-    // 요청 URL에서 HTML 데이터 가져오기
-    const response = await axios.get(url);
-    const $ = cheerio.load(response.data);
+    // Puppeteer로 HTML 데이터 수집
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto(url, { waitUntil: "networkidle2" });
+    const html = await page.content();
+    await browser.close();
 
+    const $ = cheerio.load(html);
     let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
     <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"> `;
 
@@ -26,8 +32,6 @@ export const generateSitemapXML = async (url) => {
 
     $("a[href]").each((_, element) => {
       let link = $(element).attr("href").trim();
-
-      // 상대 경로 링크 처리
       if (link.startsWith("/") || !link.startsWith("http")) {
         link = new URL(link, baseURL).href; // 상대 경로를 절대 경로로 변환
       }
