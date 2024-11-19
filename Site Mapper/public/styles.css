@@ -108,6 +108,11 @@ body {
   box-shadow: 0 3px 6px rgba(0, 123, 255, 0.3);
 }
 
+.btn:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
 .text-center {
   text-align: center;
 }
@@ -145,7 +150,6 @@ body {
 }
 
 .spinner::after {
-  content: "로딩 중...";
   display: block;
   text-align: center;
   margin-top: 10px;
