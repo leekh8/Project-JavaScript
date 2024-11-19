@@ -57,9 +57,14 @@ export const generateSitemapXML = async (url) => {
     }
 
     sitemap += `</urlset>`;
-    return sitemap;
+
+    // 파일로 저장 (서버의 임시 디렉토리)
+    const filePath = path.resolve("sitemaps", `sitemap-${Date.now()}.xml`);
+    await fs.writeFile(filePath, sitemap);
+
+    return { sitemap, filePath }; // XML과 파일 경로 반환
   } catch (error) {
     console.error("사이트맵 생성 실패:", error.message);
-    throw new Error("사이트맵 생성 실패");
+    throw new Error("사이트맵 생성에 실패했습니다.");
   }
 };
