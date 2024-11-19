@@ -40,6 +40,14 @@ const urlPattern = new RegExp(
 // 메인 페이지 GET 요청
 app.get("/", (req, res) => {
   const error = req.query.error;
+
+  // 새로고침 시 세션 데이터 제거
+  if (!req.query.keep) {
+    // 쿼리 매개변수로 세션 유지 여부 확인
+    req.session.sitemap = null;
+    req.session.sitemapPath = null;
+  }
+
   const sitemapGenerated = req.session.sitemap || null;
 
   res.render("index", { error, sitemapGenerated });
@@ -53,44 +61,62 @@ app.post("/generate", async (req, res) => {
     return res.redirect("/?error=올바른 URL을 입력해주세요.");
   }
 
+  // HTTP/HTTPS가 없는 경우 기본으로 추가
+  if (!url.startsWith("http://") && !url.startsWith("https://")) {
+    url = `https://${url}`;
+  }
+
   try {
-    const sitemap = await generateSitemapXML(url);
-    req.session.sitemap = sitemap; // 세션에 사이트맵 저장
+    const { sitemap, filePath } = await generateSitemapXML(url); // 파일 경로 포함 반환
+    req.session.sitemap = sitemap; // XML 데이터를 세션에 저장
+    req.session.sitemapPath = filePath; // 파일 경로 저장
     res.redirect(`/`);
   } catch (err) {
     console.error(err);
-    if (err.message.includes("ENOTFOUND")) {
-      res.redirect(
-        "/?error=해당 URL을 찾을 수 없습니다. 올바른 URL인지 확인해 주세요."
-      );
-    } else {
-      // 기본 사이트 정보 추가
-      req.session.sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>${url}</loc>
-    <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-</urlset>`;
-      res.redirect(
-        "/?error=사이트맵 생성 중 일부 오류가 발생했습니다. 기본 정보가 추가되었습니다."
-      );
-    }
+    res.redirect("/?error=사이트맵 생성 중 오류가 발생했습니다.");
+  }
+});
+
+app.get("/download", (req, res) => {
+  const sitemapPath = req.session.sitemapPath;
+
+  if (!sitemapPath) {
+    return res.redirect("/?error=다운로드할 사이트맵이 없습니다.");
+  }
+
+  try {
+    const fileName = `sitemap-${Date.now()}.xml`;
+    res.download(sitemapPath, fileName, (err) => {
+      if (err) {
+        console.error("파일 다운로드 오류:", err.message);
+        res.redirect("/?error=파일 다운로드에 실패했습니다.");
+      }
+    });
+  } catch (error) {
+    console.error("다운로드 처리 실패:", error.message);
+    res.redirect("/?error=다운로드 중 오류가 발생했습니다.");
   }
 });
 
 // 사이트맵 다운로드 GET 요청
-app.get("/download", (req, res) => {
-  const sitemap = req.session.sitemap;
-  if (!sitemap) {
-    return res.redirect("/?error=다운로드할 데이터가 없습니다.");
+app.get("/download", async (req, res) => {
+  const sitemapPath = req.session.sitemapPath;
+
+  if (!sitemapPath) {
+    return res.redirect("/?error=다운로드할 사이트맵이 없습니다.");
   }
 
-  res.setHeader("Content-Disposition", 'attachment; filename="sitemap.xml"');
-  res.setHeader("Content-Type", "application/xml");
-  res.send(sitemap);
+  try {
+    res.download(sitemapPath, "sitemap.xml", (err) => {
+      if (err) {
+        console.error("파일 다운로드 중 오류:", err.message);
+        res.redirect("/?error=파일 다운로드에 실패했습니다.");
+      }
+    });
+  } catch (error) {
+    console.error("다운로드 처리 실패:", error.message);
+    res.redirect("/?error=다운로드 중 오류가 발생했습니다.");
+  }
 });
 
 // 사용 가이드 페이지
