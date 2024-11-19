@@ -15,15 +15,16 @@
       rel="stylesheet"
     />
     <script>
+      // URL 입력 폼 검증
       function validateForm() {
         const urlInput = document.getElementById("url").value;
         const urlPattern = new RegExp(
-          "^(https?:\/\/)?" +
-            "((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|" +
-            "((\d{1,3}\.){3}\d{1,3}))" +
-            "(\:\d+)?(\/[-a-z\d%_.~+]*)*" +
-            "(\?[;&a-z\d%_.~+=-]*)?" +
-            "(\#[-a-z\d_]*)?$",
+          "^(https?:\\/\\/)?" +
+            "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" +
+            "((\\d{1,3}\\.){3}\\d{1,3}))" +
+            "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" +
+            "(\\?[;&a-z\\d%_.~+=-]*)?" +
+            "(\\#[-a-z\\d_]*)?$",
           "i"
         );
         if (!urlPattern.test(urlInput)) {
@@ -51,6 +52,7 @@
         <p>사이트맵을 생성 중입니다. 잠시만 기다려 주세요...</p>
         <div class="spinner"></div>
       </div>
+
       <!-- URL 입력 폼 -->
       <form
         action="/generate"
@@ -84,28 +86,34 @@
           초기화
         </button>
       </form>
-      <% if (!sitemapGenerated && !error) { %>
+
+      <!-- 사이트맵 결과 -->
+      <% if (error) { %>
+      <div class="alert mt-3"><%= error %></div>
+      <% } else if (sitemapGenerated) { %>
+      <div class="mt-4">
+        <h5 class="text-success">사이트맵 결과:</h5>
+        <textarea id="sitemapPreview" class="form-control" rows="10" readonly>
+<%= sitemapGenerated %></textarea
+        >
+        <div class="btn-container">
+          <button
+            class="btn btn-primary btn-success"
+            onclick="copyToClipboard('sitemapPreview')"
+            aria-label="복사"
+          >
+            복사
+          </button>
+          <a href="/download" class="btn btn-primary" aria-label="다운로드"
+            >다운로드</a
+          >
+        </div>
+      </div>
+      <% } else { %>
       <div class="text-center mt-5">
         <p class="text-muted">사이트맵 결과가 여기에 표시됩니다.</p>
-        <p>위에 입력창에 URL을 입력하고 "사이트맵 생성" 버튼을 눌러보세요!</p>
+        <p>URL을 입력하고 "사이트맵 생성"을 눌러보세요!</p>
       </div>
-      <% } %> <% if (error) { %>
-      <div class="alert"><%= error %></div>
-      <% } %> <% if (sitemapGenerated) { %>
-        <div class="mt-4">
-          <h5 class="text-success">사이트맵 결과:</h5>
-          <ul style="max-height: 300px; overflow-y: auto; padding: 0; list-style: none;">
-            <% sitemapGenerated.split("\n").forEach(line => { %>
-              <% if (line.includes("<loc>")) { %>
-                <li style="margin-bottom: 5px;">
-                  <a href="<%= line.match(/<loc>(.*?)<\/loc>/)[1] %>" target="_blank" style="color: #0077b6;">
-                    <%= line.match(/<loc>(.*?)<\/loc>/)[1] %>
-                  </a>
-                </li>
-              <% } %>
-            <% }); %>
-          </ul>
-        </div>
       <% } %>
     </div>
   </body>
