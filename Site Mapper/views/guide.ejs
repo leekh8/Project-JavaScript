@@ -7,33 +7,35 @@
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <div class="container mt-5 p-5 bg-white rounded shadow">
-      <h1>사용 가이드</h1>
-      <%- include('partials/header') %>
-      <div class="mt-5 p-5 bg-white rounded shadow">
-        <ol class="list-unstyled">
-          <li
-            class="mb-4"
-            style="border-left: 4px solid #0077b6; padding-left: 10px"
-          >
-            <strong>1단계:</strong> URL 입력창에 사이트 주소를 입력합니다.
-          </li>
-          <li
-            class="mb-4"
-            style="border-left: 4px solid #0077b6; padding-left: 10px"
-          >
-            <strong>2단계:</strong> "사이트맵 생성" 버튼을 클릭합니다.
-          </li>
-          <li
-            class="mb-4"
-            style="border-left: 4px solid #0077b6; padding-left: 10px"
-          >
-            <strong>3단계:</strong> 결과를 확인하고 "다운로드" 버튼을
-            클릭합니다.
-          </li>
-        </ol>
+    <div class="container">
+      <div class="text-center text-primary">
+        <h1>사용 가이드</h1>
+        <%- include('partials/header') %>
+        <div class="mt-5 p-5 bg-white rounded shadow">
+          <ol class="list-unstyled">
+            <li
+              class="mb-4"
+              style="border-left: 4px solid #0077b6; padding-left: 10px"
+            >
+              <strong>1단계:</strong> URL 입력창에 사이트 주소를 입력합니다.
+            </li>
+            <li
+              class="mb-4"
+              style="border-left: 4px solid #0077b6; padding-left: 10px"
+            >
+              <strong>2단계:</strong> "사이트맵 생성" 버튼을 클릭합니다.
+            </li>
+            <li
+              class="mb-4"
+              style="border-left: 4px solid #0077b6; padding-left: 10px"
+            >
+              <strong>3단계:</strong> 결과를 확인하고 "다운로드" 버튼을
+              클릭합니다.
+            </li>
+          </ol>
+        </div>
+        <a href="/" class="btn-custom mt-3">홈으로 돌아가기</a>
       </div>
-      <a href="/" class="btn-custom mt-3">홈으로 돌아가기</a>
     </div>
   </body>
 </html>
