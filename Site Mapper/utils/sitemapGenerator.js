@@ -65,17 +65,10 @@ export const generateSitemapXML = async (url) => {
     });
     sitemap += `</urlset>`;
 
-    // 저장 디렉토리 설정
-    const dirPath = path.resolve("public");
-    await fs.mkdir(dirPath, { recursive: true });
-    console.log("생성된 디렉토리:", dirPath);
+    // FIXME: DELETE
+    console.log("sitemapGenerator.js: sitemap.xml 생성 확인: ", sitemap);
 
-    // 파일 저장
-    const filePath = path.join(dirPath, `sitemap-${Date.now()}.xml`);
-
-    await fs.writeFile(filePath, sitemap);
-
-    return { sitemap, filePath };
+    return { sitemap };
   } catch (error) {
     console.error("사이트맵 생성 실패:", error.message);
     throw new Error("사이트맵 생성에 실패했습니다.");
