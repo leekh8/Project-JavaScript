@@ -42,13 +42,13 @@ const urlPattern = new RegExp(
 app.get("/", (req, res) => {
   const error = req.query.error;
 
-  // 새로고침 시 세션 데이터 제거
-  if (!req.query.keep) {
-    // 쿼리 매개변수로 세션 유지 여부 확인
+  // 초기화 요청 시 세션 데이터 제거
+  if (req.query.reset) {
     req.session.sitemap = null;
     req.session.sitemapPath = null;
   }
 
+  // 세션 데이터에서 사이트맵 내용 가져오기
   const sitemapGenerated = req.session.sitemap || null;
 
   res.render("index", { error, sitemapGenerated });
@@ -69,10 +69,11 @@ app.post("/generate", async (req, res) => {
   }
 
   try {
-    const { sitemap, filePath } = await generateSitemapXML(url);
-    req.session.sitemap = sitemap;
-    req.session.sitemapPath = filePath;
-    res.redirect(`/`);
+    const { sitemap } = await generateSitemapXML(url);
+
+    req.session.sitemap = sitemap; // 세션에 사이트맵 저장
+
+    res.redirect("/?keep=true"); // 생성 후 메인 페이지로 리다이렉트
   } catch (err) {
     console.error(err);
     res.redirect("/?error=사이트맵 생성 중 오류가 발생했습니다.");
@@ -81,25 +82,29 @@ app.post("/generate", async (req, res) => {
 
 // 사이트맵 다운로드 GET 요청
 app.get("/download", async (req, res) => {
-  const sitemapPath = req.session.sitemapPath;
+  const sitemap = req.session.sitemap;
 
-  if (!sitemapPath) {
+  if (!sitemap) {
     return res.redirect("/?error=다운로드할 사이트맵이 없습니다.");
   }
 
   try {
-    // 파일 존재 여부 확인
-    await fs.access(sitemapPath);
+    // 파일 저장 경로 설정
+    const dirPath = path.resolve("public");
+    await fs.mkdir(dirPath, { recursive: true });
 
-    res.download(sitemapPath, "sitemap.xml", (err) => {
+    const filePath = path.join(dirPath, `sitemap-${Date.now()}.xml`);
+    await fs.writeFile(filePath, sitemap); // 파일 저장
+
+    res.download(filePath, "sitemap.xml", (err) => {
       if (err) {
-        console.error("파일 다운로드 중 오류:", err.message);
-        res.redirect("/?error=파일 다운로드에 실패했습니다.");
+        console.error("파일 다운로드 오류:", err.message);
+        res.redirect("/?error=다운로드에 실패했습니다.");
       }
     });
   } catch (error) {
-    console.error("파일 존재하지 않음:", error.message);
-    res.redirect("/?error=다운로드할 파일이 없습니다.");
+    console.error("다운로드 처리 실패:", error.message);
+    res.redirect("/?error=다운로드 처리 중 문제가 발생했습니다.");
   }
 });
 
