@@ -105,7 +105,7 @@
           <button
             type="button"
             class="btn btn-secondary w-100 mt-2"
-            onclick="window.location.href='/'"
+            onclick="window.location.href='/?reset=true'"
             aria-label="초기화"
           >
             초기화
@@ -120,7 +120,7 @@
       <div class="mt-4">
         <h5 class="text-success">사이트맵 결과:</h5>
         <textarea id="sitemapPreview" class="form-control" rows="10" readonly>
-<%= sitemapGenerated %></textarea
+<%- sitemapGenerated %></textarea
         >
         <div class="btn-container">
           <button
@@ -130,9 +130,9 @@
           >
             복사
           </button>
-          <a href="/download" class="btn btn-primary" aria-label="다운로드"
-            >다운로드</a
-          >
+          <a href="/download" class="btn btn-primary" aria-label="다운로드">
+            다운로드
+          </a>
         </div>
       </div>
       <% } else { %>
