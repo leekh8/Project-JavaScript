@@ -1,19 +1,9 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import puppeteer from "puppeteer";
-import fs from "fs/promises";
-import path from "path";
 
 export const generateSitemapXML = async (url) => {
   try {
-    // 기존 sitemap.xml 확인
-    try {
-      const sitemapResponse = await axios.get(`${url}/sitemap.xml`);
-      return sitemapResponse.data; // 기존 sitemap.xml 반환
-    } catch {
-      console.warn("기존 sitemap.xml을 찾을 수 없습니다. 직접 생성합니다.");
-    }
-
     // Puppeteer로 HTML 데이터 수집
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
@@ -64,9 +54,6 @@ export const generateSitemapXML = async (url) => {
       </url>`;
     });
     sitemap += `</urlset>`;
-
-    // FIXME: DELETE
-    console.log("sitemapGenerator.js: sitemap.xml 생성 확인: ", sitemap);
 
     return { sitemap };
   } catch (error) {
