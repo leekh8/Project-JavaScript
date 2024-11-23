@@ -24,53 +24,54 @@
           Site Mapper에 대한 피드백이나 문의 사항이 있다면 아래 폼을 통해
           연락주세요!
         </p>
-        <form
-          action="/submit-feedback"
-          method="post"
-          onsubmit="return validateContactForm();"
-        >
-          <div class="mb-3">
-            <label for="email" class="form-label">이메일:</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              class="form-control"
-              required
-            />
+        <div class="item-container" style="margin-top: 1.25rem">
+          <form
+            action="/submit-feedback"
+            method="post"
+            onsubmit="return validateContactForm();"
+          >
+            <div class="mb-3">
+              <label for="email" class="form-label">이메일:</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="message" class="form-label">메시지:</label>
+              <textarea
+                id="message"
+                name="message"
+                class="form-control"
+                rows="5"
+                required
+              ></textarea>
+            </div>
+          </form>
+          <div class="btn-container">
+            <button type="submit" class="btn-custom">제출</button>
           </div>
-          <div class="mb-3">
-            <label for="message" class="form-label">메시지:</label>
-            <textarea
-              id="message"
-              name="message"
-              class="form-control"
-              rows="5"
-              required
-            ></textarea>
-          </div>
-        </form>
-        <div class="btn-container">
-          <button type="submit" class="btn-custom">제출</button>
+
+          <!-- 클라이언트 유효성 검사 스크립트 -->
+          <script>
+            function validateContactForm() {
+              const email = document.getElementById("email").value;
+              const message = document.getElementById("message").value;
+              if (!email.includes("@")) {
+                alert("올바른 이메일 주소를 입력해주세요.");
+                return false;
+              }
+              if (message.trim().length < 10) {
+                alert("메시지는 최소 10자 이상 입력해주세요.");
+                return false;
+              }
+              return true;
+            }
+          </script>
         </div>
-
-        <!-- 클라이언트 유효성 검사 스크립트 -->
-        <script>
-          function validateContactForm() {
-            const email = document.getElementById("email").value;
-            const message = document.getElementById("message").value;
-            if (!email.includes("@")) {
-              alert("올바른 이메일 주소를 입력해주세요.");
-              return false;
-            }
-            if (message.trim().length < 10) {
-              alert("메시지는 최소 10자 이상 입력해주세요.");
-              return false;
-            }
-            return true;
-          }
-        </script>
-
         <a href="/" class="btn-custom"> 홈으로 돌아가기 </a>
       </div>
     </div>
