@@ -213,6 +213,10 @@ nav ul li a:hover {
   padding: 10px 0;
   border: none;
 }
+.item-container {
+  border-left: 4px solid #0077b6;
+  padding-left: 10px;
+}
 
 .faq-item {
   margin-bottom: 20px;
