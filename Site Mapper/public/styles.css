@@ -22,6 +22,10 @@ h3 {
   color: #007bff;
 }
 
+a {
+  text-decoration: none;
+}
+
 .form-label {
   font-weight: bold;
   margin-bottom: 10px;
